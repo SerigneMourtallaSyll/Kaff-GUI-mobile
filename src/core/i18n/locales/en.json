@@ -1,0 +1,54 @@
+{
+  "common": {
+    "appName": "Kàff GUI",
+    "tagline": "Aviary Management",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading…",
+    "retry": "Retry",
+    "search": "Search",
+    "empty": "No results",
+    "back": "Back"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "emailLabel": "Email",
+      "emailPlaceholder": "baay.pitaq@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Sign in",
+      "createAccount": "Create account",
+      "errors": {
+        "invalidCredentials": "Invalid email or password.",
+        "tooManyAttempts": "Too many attempts. Try again in a few minutes.",
+        "network": "Cannot connect. Check your network."
+      }
+    },
+    "register": {
+      "title": "Sign up",
+      "firstNameLabel": "First name",
+      "lastNameLabel": "Last name",
+      "submit": "Create my account",
+      "haveAccount": "I already have an account"
+    },
+    "logout": "Sign out"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "voliere": "Aviary",
+    "pigeons": "Pigeons",
+    "couples": "Pairs",
+    "sorties": "Exits"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Cannot reach the server.",
+    "unauthorized": "Session expired. Please sign in again.",
+    "validation": "Please check the fields.",
+    "server": "The server encountered an issue."
+  }
+}

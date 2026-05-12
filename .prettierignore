@@ -1,0 +1,10 @@
+node_modules
+.expo
+dist
+android
+ios
+coverage
+*.log
+package-lock.json
+.husky/_
+expo-env.d.ts

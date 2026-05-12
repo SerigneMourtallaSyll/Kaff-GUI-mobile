@@ -1,0 +1,54 @@
+{
+  "common": {
+    "appName": "Kàff GUI",
+    "tagline": "Gestion de Volière",
+    "ok": "OK",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "loading": "Chargement…",
+    "retry": "Réessayer",
+    "search": "Rechercher",
+    "empty": "Aucun résultat",
+    "back": "Retour"
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "emailLabel": "Email",
+      "emailPlaceholder": "baay.pitaq@example.com",
+      "passwordLabel": "Mot de passe",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Se connecter",
+      "createAccount": "Créer un compte",
+      "errors": {
+        "invalidCredentials": "Email ou mot de passe incorrect.",
+        "tooManyAttempts": "Trop de tentatives. Réessayez dans quelques minutes.",
+        "network": "Connexion impossible. Vérifiez votre réseau."
+      }
+    },
+    "register": {
+      "title": "Inscription",
+      "firstNameLabel": "Prénom",
+      "lastNameLabel": "Nom",
+      "submit": "Créer mon compte",
+      "haveAccount": "J'ai déjà un compte"
+    },
+    "logout": "Se déconnecter"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "voliere": "Volière",
+    "pigeons": "Pigeons",
+    "couples": "Couples",
+    "sorties": "Sorties"
+  },
+  "errors": {
+    "generic": "Une erreur est survenue. Réessayez.",
+    "network": "Impossible de joindre le serveur.",
+    "unauthorized": "Session expirée. Veuillez vous reconnecter.",
+    "validation": "Veuillez vérifier les champs saisis.",
+    "server": "Le serveur a rencontré un problème."
+  }
+}

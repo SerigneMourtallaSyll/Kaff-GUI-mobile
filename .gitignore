@@ -70,3 +70,9 @@ Thumbs.db
 
 # NativeWind generated
 .nativewind-cache/
+
+# Commercial font binaries — see assets/fonts/README.md for instructions
+assets/fonts/*.otf
+assets/fonts/*.ttf
+assets/fonts/*.woff
+assets/fonts/*.woff2

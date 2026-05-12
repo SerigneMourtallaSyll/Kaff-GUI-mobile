@@ -7,6 +7,7 @@
  * this file is what JS/TS code reads when it needs a raw value (e.g.
  * StyleSheet, native APIs, charts).
  */
+import { FONT_FAMILY } from './fonts';
 
 export const palette = {
   primary: {
@@ -47,6 +48,20 @@ export const palette = {
   warning: '#F59E0B',
   danger: '#DC2626',
   info: '#0EA5E9',
+
+  // Chart accents (mirror the prototype shadcn chart-* palette so screens
+  // can carry the same iconography colors)
+  chart: {
+    1: '#DE6B33',
+    2: '#2EB6A8',
+    3: '#2D4E68',
+    4: '#E5B854',
+    5: '#F4A261',
+  },
+
+  // Pigeon sex tints (used in the Pigeons / Couples lists)
+  male: { bg: '#DBEAFE', fg: '#2563EB' },
+  female: { bg: '#FCE7F3', fg: '#DB2777' },
 } as const;
 
 export const spacing = {
@@ -83,6 +98,7 @@ export const radius = {
 } as const;
 
 export const typography = {
+  fontFamily: FONT_FAMILY,
   fontSize: {
     xs: 12,
     sm: 14,

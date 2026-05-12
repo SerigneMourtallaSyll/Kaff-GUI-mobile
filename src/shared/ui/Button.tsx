@@ -9,6 +9,7 @@ import type { ReactNode } from 'react';
 
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
+import { FONT_FAMILY } from '@/core/theme';
 import { cn } from '@/shared/utils';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'destructive' | 'ghost';
@@ -95,7 +96,10 @@ export function Button({
       ) : (
         <View className="flex-row items-center gap-2">
           {leadingIcon}
-          <Text className={cn('font-medium', textStyles[variant], textSizeStyles[size])}>
+          <Text
+            style={{ fontFamily: FONT_FAMILY.medium }}
+            className={cn(textStyles[variant], textSizeStyles[size])}
+          >
             {children}
           </Text>
         </View>

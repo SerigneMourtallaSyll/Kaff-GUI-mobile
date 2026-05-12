@@ -15,6 +15,7 @@ import { StatusBar } from 'expo-status-bar';
 
 import '@/core/i18n';
 import { selectAuthStatus, useAuthStore, useBootstrapAuth } from '@/features/auth';
+import { useAppFonts } from '@/shared/hooks';
 import { AppProviders } from '@/shared/providers';
 
 import '../global.css';
@@ -23,16 +24,19 @@ void SplashScreen.preventAutoHideAsync();
 
 function RootStack() {
   const status = useAuthStore(selectAuthStatus);
+  const { ready: fontsReady } = useAppFonts();
   useBootstrapAuth();
 
+  const bootReady = status !== 'idle' && fontsReady;
+
   useEffect(() => {
-    if (status !== 'idle') {
+    if (bootReady) {
       void SplashScreen.hideAsync();
     }
-  }, [status]);
+  }, [bootReady]);
 
   // Show nothing while hydrating — the splash screen is still visible.
-  if (status === 'idle') return null;
+  if (!bootReady) return null;
 
   return (
     <>

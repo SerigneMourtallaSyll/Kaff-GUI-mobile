@@ -5,7 +5,7 @@ import { Tabs } from 'expo-router';
 
 import { Bird, Grid3X3, Heart, LayoutDashboard, TrendingDown } from 'lucide-react-native';
 
-import { palette } from '@/core/theme';
+import { FONT_FAMILY, palette } from '@/core/theme';
 
 export default function TabsLayout() {
   return (
@@ -21,15 +21,15 @@ export default function TabsLayout() {
           paddingTop: 8,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '500',
+          fontSize: 10,
+          fontFamily: FONT_FAMILY.medium,
         },
       }}
     >
       <Tabs.Screen
         name="dashboard"
         options={{
-          title: 'Tableau',
+          title: 'Tableau de bord',
           tabBarIcon: ({ color, size }) => <LayoutDashboard color={color} size={size} />,
         }}
       />

@@ -6,3 +6,6 @@ export { Card } from './Card';
 export { Heading } from './Heading';
 export { Spinner } from './Spinner';
 export { EmptyState } from './EmptyState';
+export { AppHeader } from './AppHeader';
+export { CageIllustration } from './CageIllustration';
+export type { CageStatus } from './CageIllustration';

@@ -50,7 +50,7 @@
     "i18next": "^26.1.0",
     "lucide-react-native": "^1.14.0",
     "nativewind": "^4.2.3",
-    "react": "19.1.0",
+    "react": "19.2.6",
     "react-hook-form": "^7.75.0",
     "react-i18next": "^17.0.7",
     "react-native": "0.81.5",
@@ -90,7 +90,8 @@
     "msw": "^2.14.6",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "react-test-renderer": "^19.1.0",
+    "react-dom": "19.2.6",
+    "react-test-renderer": "19.2.6",
     "typescript": "~5.9.2"
   },
   "lint-staged": {

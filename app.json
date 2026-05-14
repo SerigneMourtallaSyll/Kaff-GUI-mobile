@@ -13,7 +13,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.baaypitaq.kaffgui",
@@ -70,7 +72,13 @@
       "tsconfigPaths": true
     },
     "extra": {
-      "router": {}
-    }
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "eff90533-8b48-4600-a4a9-8aec6998f927"
+      }
+    },
+    "owner": "mourtalla221"
   }
 }

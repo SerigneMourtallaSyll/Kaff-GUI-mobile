@@ -22,21 +22,38 @@ npm run start
 
 Then press `a` for Android, `i` for iOS, or `w` for Web.
 
-The first run requires a development build (Expo dev client) if you want native
-modules like `expo-secure-store` to work fully. For pure UI development, Expo
-Go is sufficient.
+Pour tester **avec le même binaire que la prod** (Secure Store, Dev Menu,
+navigation native complète), utilisez un **development build** EAS puis
+`npm run start:dev` pour brancher Metro — voir la section _Builds EAS_ ci-dessous.
 
 ## 🧰 Scripts
 
-| Script                                          | Description                    |
-| ----------------------------------------------- | ------------------------------ |
-| `npm run start`                                 | Start Metro bundler            |
-| `npm run android` / `ios` / `web`               | Run on a specific platform     |
-| `npm run lint` / `lint:fix`                     | ESLint (zero warnings allowed) |
-| `npm run format` / `format:check`               | Prettier                       |
-| `npm run typecheck`                             | TypeScript without emit        |
-| `npm run test` / `test:watch` / `test:coverage` | Jest (jest-expo preset)        |
-| `npm run doctor`                                | `expo-doctor` health check     |
+| Script                                            | Description                                       |
+| ------------------------------------------------- | ------------------------------------------------- |
+| `npm run start`                                   | Start Metro bundler                               |
+| `npm run android` / `ios` / `web`                 | Run on a specific platform                        |
+| `npm run lint` / `lint:fix`                       | ESLint (zero warnings allowed)                    |
+| `npm run format` / `format:check`                 | Prettier                                          |
+| `npm run typecheck`                               | TypeScript without emit                           |
+| `npm run test` / `test:watch` / `test:coverage`   | Jest (jest-expo preset)                           |
+| `npm run doctor`                                  | `expo-doctor` health check                        |
+| `npm run start:dev`                               | Metro pour **development build** EAS (dev client) |
+| `npm run eas:dev:android` / `eas:dev:ios`         | EAS Build — profil **development**                |
+| `npm run eas:preview:android` / `eas:preview:ios` | EAS Build — profil **preview** (interne)          |
+
+## 📲 Builds EAS (téléphone physique)
+
+Prérequis : compte sur [expo.dev](https://expo.dev), **Node ≥ 20**, dépendances installées (`npm install --legacy-peer-deps`).
+
+1. Connexion CLI : `npx eas-cli login`
+2. Lier le projet (première fois) : `npx eas-cli init` — ajoute `extra.eas.projectId` dans `app.json` si besoin.
+3. Build **development** (APK Android prêt à sideload) : `npm run eas:dev:android`
+4. Récupérer l’APK ou l’IPA sur la page du build Expo et l’installer.
+5. Sur le PC : `npm run start:dev` puis ouvrir l’app sur l’appareil (même Wi‑Fi, ou tunnel depuis le menu développeur).
+
+**Backend** : sur téléphone, `localhost` ne cible pas votre PC. Utilisez l’IP LAN ou une URL de staging pour `EXPO_PUBLIC_API_BASE_URL` (secrets / variables EAS ou `.env` selon votre flux).
+
+Profils dans [`eas.json`](./eas.json) : `development` (dev client), `preview`, `production`.
 
 ## 🏗️ Architecture
 

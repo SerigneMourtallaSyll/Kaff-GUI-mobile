@@ -18,7 +18,12 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage --passWithNoTests",
     "prepare": "husky",
-    "doctor": "npx expo-doctor"
+    "doctor": "npx expo-doctor",
+    "eas:dev:android": "npx eas-cli@latest build --profile development --platform android",
+    "eas:dev:ios": "npx eas-cli@latest build --profile development --platform ios",
+    "eas:preview:android": "npx eas-cli@latest build --profile preview --platform android",
+    "eas:preview:ios": "npx eas-cli@latest build --profile preview --platform ios",
+    "start:dev": "expo start --dev-client"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -30,6 +35,7 @@
     "date-fns": "^4.1.0",
     "expo": "~54.0.33",
     "expo-constants": "~18.0.13",
+    "expo-dev-client": "~6.0.21",
     "expo-font": "~14.0.11",
     "expo-haptics": "~15.0.8",
     "expo-image": "~3.0.11",

@@ -5,9 +5,9 @@
  * title and an optional logout action. Uses the SafeAreaView's top inset so
  * the header sits below the status bar on every device.
  */
-import { Pressable, Text, View } from 'react-native';
+import { Image, Pressable, Text, View } from 'react-native';
 
-import { Bird, LogOut } from 'lucide-react-native';
+import { LogOut } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FONT_FAMILY } from '@/core/theme';
@@ -35,7 +35,11 @@ export function AppHeader({ title, onLogout }: AppHeaderProps) {
       <View className="flex-row items-center justify-between px-4 py-3">
         <View className="flex-row items-center gap-3">
           <View className="h-10 w-10 items-center justify-center rounded-full bg-white/20">
-            <Bird color="#FFFFFF" size={22} />
+            <Image
+              source={require('@/assets/img/logo-kaff-gui.png')}
+              style={{ width: 28, height: 28 }}
+              resizeMode="contain"
+            />
           </View>
           <View>
             <Text style={{ fontFamily: FONT_FAMILY.semibold }} className="text-base text-white">

@@ -13,9 +13,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.baaypitaq.kaffgui",
@@ -76,9 +74,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "eff90533-8b48-4600-a4a9-8aec6998f927"
+        "projectId": "1776cb36-c940-4099-945f-ceca4cd31761"
       }
     },
-    "owner": "mourtalla221"
+    "owner": "almourtada"
   }
 }

@@ -10,13 +10,13 @@
  */
 import { useState } from 'react';
 
-import { Pressable, Text, View } from 'react-native';
+import { Image, Pressable, Text, View } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Bird, Lock, Mail } from 'lucide-react-native';
+import { Lock, Mail } from 'lucide-react-native';
 import { Controller, useForm } from 'react-hook-form';
 
 import { AUTH } from '@/core/config';
@@ -82,7 +82,7 @@ export default function LoginScreen() {
       >
         <View className="mb-8 items-center">
           <View
-            className="mb-4 h-20 w-20 items-center justify-center rounded-full bg-primary"
+            className="mb-4 h-24 w-24 items-center justify-center rounded-full bg-white"
             style={{
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 8 },
@@ -91,7 +91,11 @@ export default function LoginScreen() {
               elevation: 6,
             }}
           >
-            <Bird color="#FFFFFF" size={42} />
+            <Image
+              source={require('@/assets/img/logo-kaff-gui.png')}
+              style={{ width: 80, height: 80 }}
+              resizeMode="contain"
+            />
           </View>
           <Text style={{ fontFamily: FONT_FAMILY.bold }} className="mb-1 text-3xl text-primary">
             Kàff GUI

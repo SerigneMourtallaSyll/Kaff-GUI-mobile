@@ -1,2 +1,16 @@
-// Public surface of the reproductions & genealogy feature. US-REP-01 → US-REP-03.
-export {};
+/**
+ * Reproductions feature — public API.
+ */
+
+// Types
+export * from './types';
+
+// Schemas (for form validation)
+export { createReproductionInputSchema, updateReproductionInputSchema } from './schemas';
+
+// Hooks
+export { useReproductions } from './hooks/useReproductions';
+export { useReproduction } from './hooks/useReproduction';
+export { useCreateReproduction } from './hooks/useCreateReproduction';
+export { useUpdateReproduction } from './hooks/useUpdateReproduction';
+export { usePigeonneaux } from './hooks/usePigeonneaux';

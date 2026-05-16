@@ -11,30 +11,30 @@ import { FONT_FAMILY } from './fonts';
 
 export const palette = {
   primary: {
-    DEFAULT: '#030213',
+    DEFAULT: '#4CAF50', // Vert du prototype
     foreground: '#FFFFFF',
-    50: '#F5F5F8',
-    100: '#E8E8EE',
-    200: '#C5C5D2',
-    300: '#9C9CB1',
-    400: '#5F5F7A',
-    500: '#3D3D5C',
-    600: '#2A2A45',
-    700: '#1C1C30',
-    800: '#0F0F1F',
-    900: '#030213',
+    50: '#E8F5E9',
+    100: '#C8E6C9',
+    200: '#A5D6A7',
+    300: '#81C784',
+    400: '#66BB6A',
+    500: '#4CAF50',
+    600: '#43A047',
+    700: '#388E3C',
+    800: '#2E7D32',
+    900: '#1B5E20',
   },
 
   background: '#FFFFFF',
-  foreground: '#0A0A0F',
+  foreground: '#1A1A1A',
   card: '#FFFFFF',
-  cardForeground: '#0A0A0F',
-  muted: '#ECECF0',
-  mutedForeground: '#717182',
-  accent: '#E9EBEF',
-  accentForeground: '#030213',
-  border: '#E5E7EB',
-  input: '#F3F3F5',
+  cardForeground: '#1A1A1A',
+  muted: '#F5F5F5',
+  mutedForeground: '#6B7280',
+  accent: '#E8F5E9',
+  accentForeground: '#1A1A1A',
+  border: 'rgba(0, 0, 0, 0.1)',
+  input: '#F5F5F5',
 
   // Volière (cahier des charges §3.8)
   cage: {
@@ -44,19 +44,19 @@ export const palette = {
   },
 
   // Status
-  success: '#16A34A',
-  warning: '#F59E0B',
-  danger: '#DC2626',
-  info: '#0EA5E9',
+  success: '#4CAF50',
+  warning: '#FF9800',
+  danger: '#F44336',
+  info: '#2196F3',
 
   // Chart accents (mirror the prototype shadcn chart-* palette so screens
   // can carry the same iconography colors)
   chart: {
-    1: '#DE6B33',
-    2: '#2EB6A8',
-    3: '#2D4E68',
-    4: '#E5B854',
-    5: '#F4A261',
+    1: '#4CAF50',
+    2: '#81C784',
+    3: '#F44336',
+    4: '#FF9800',
+    5: '#2196F3',
   },
 
   // Pigeon sex tints (used in the Pigeons / Couples lists)

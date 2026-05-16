@@ -1,2 +1,6 @@
-// Public surface of the sorties feature. US-SOR-01 → US-SOR-04.
-export {};
+/**
+ * Sorties feature — public API.
+ */
+export * from './types';
+export { useSorties } from './hooks/useSorties';
+export { useSortie } from './hooks/useSortie';

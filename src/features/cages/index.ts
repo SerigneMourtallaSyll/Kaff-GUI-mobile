@@ -1,4 +1,9 @@
-// Public surface of the cages feature.
-// To be populated: types, schemas, api (grid, assign, release), hooks, store.
-// Will own the visualisation API (US-CAG-01 → US-CAG-06).
-export {};
+/**
+ * Cages feature — public API.
+ */
+export * from './types';
+export { useVolet } from './hooks/useVolet';
+export { useCreateCage } from './hooks/useCreateCage';
+export { useAffecterPigeon } from './hooks/useAffecterPigeon';
+export { useAffecterCouple } from './hooks/useAffecterCouple';
+export { useLibererCage } from './hooks/useLibererCage';

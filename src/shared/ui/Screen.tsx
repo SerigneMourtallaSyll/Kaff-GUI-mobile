@@ -8,6 +8,7 @@
 import type { ReactNode } from 'react';
 
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import type { RefreshControlProps } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -19,6 +20,7 @@ interface ScreenProps {
   className?: string;
   contentClassName?: string;
   edges?: ('top' | 'bottom' | 'left' | 'right')[];
+  refreshControl?: React.ReactElement<RefreshControlProps>;
 }
 
 export function Screen({
@@ -27,6 +29,7 @@ export function Screen({
   className,
   contentClassName,
   edges = ['top', 'bottom'],
+  refreshControl,
 }: ScreenProps) {
   const Content = scroll ? ScrollView : View;
 
@@ -40,6 +43,7 @@ export function Screen({
           className={cn('flex-1', contentClassName)}
           contentContainerClassName={scroll ? 'flex-grow' : undefined}
           keyboardShouldPersistTaps={scroll ? 'handled' : undefined}
+          refreshControl={scroll ? refreshControl : undefined}
         >
           {children}
         </Content>

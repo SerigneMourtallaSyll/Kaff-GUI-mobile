@@ -91,7 +91,7 @@ export function Button({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === 'primary' || variant === 'destructive' ? '#FFFFFF' : '#030213'}
+          color={variant === 'primary' || variant === 'destructive' ? '#FFFFFF' : '#4CAF50'}
         />
       ) : (
         <View className="flex-row items-center gap-2">

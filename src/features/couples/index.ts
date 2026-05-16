@@ -1,2 +1,9 @@
-// Public surface of the couples feature. US-COU-01 → US-COU-03.
-export {};
+/**
+ * Couples feature — public API.
+ */
+export * from './types';
+export { createCoupleInputSchema, rompreCoupleInputSchema } from './schemas';
+export { useCouples } from './hooks/useCouples';
+export { useCouple } from './hooks/useCouple';
+export { useFormerCouple } from './hooks/useFormerCouple';
+export { useRompreCouple } from './hooks/useRompreCouple';

@@ -9,3 +9,6 @@ export { EmptyState } from './EmptyState';
 export { AppHeader } from './AppHeader';
 export { CageIllustration } from './CageIllustration';
 export type { CageStatus } from './CageIllustration';
+export { LoadingOverlay } from './LoadingOverlay';
+export { TopLoadingBar } from './TopLoadingBar';
+export { DatePicker } from './DatePicker';

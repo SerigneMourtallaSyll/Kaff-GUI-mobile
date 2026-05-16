@@ -47,6 +47,7 @@ function RootStack() {
           animation: 'slide_from_right',
         }}
       >
+        <Stack.Screen name="index" options={{ animation: 'fade' }} />
         <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
         <Stack.Screen name="(protected)" options={{ animation: 'fade' }} />
         <Stack.Screen name="+not-found" />

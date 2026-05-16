@@ -7,5 +7,11 @@ export { authApi } from './api';
 export * from './hooks';
 export { useAuthStore, selectIsAuthenticated, selectAuthStatus, selectUser } from './stores';
 export type { User, AuthStatus, AuthSession } from './types';
-export { loginSchema, registerSchema, emailSchema, passwordSchema } from './schemas';
-export type { LoginInput, RegisterInput } from './schemas';
+export {
+  loginSchema,
+  registerSchema,
+  emailSchema,
+  passwordSchema,
+  totpCodeSchema,
+} from './schemas';
+export type { LoginInput, RegisterInput, TOTPCodeInput } from './schemas';

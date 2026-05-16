@@ -4,29 +4,31 @@
  *   - react-hook-form + Zod validation.
  *   - Client-side rate-limiting (5 attempts / 5 min) — mirrors server policy.
  *   - Typed errors surfaced inline; no PII in error toasts.
+ *   - 2FA flow: credentials → challenge token → TOTP verification
  *
  * Visuals match the Figma prototype 1:1 (gradient surface, logo halo,
  * card with form, version footer).
  */
 import { useState } from 'react';
 
-import { Image, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Lock, Mail } from 'lucide-react-native';
+import { Bird, Lock, Mail } from 'lucide-react-native';
 import { Controller, useForm } from 'react-hook-form';
 
 import { AUTH } from '@/core/config';
 import { AppError } from '@/core/errors';
 import { FONT_FAMILY } from '@/core/theme';
-import { useLogin, loginSchema, type LoginInput } from '@/features/auth';
-import { Button, Input, Screen } from '@/shared/ui';
+import { useLogin, useInitCrypto, loginSchema, type LoginInput } from '@/features/auth';
+import { Button, Input, TopLoadingBar, Screen } from '@/shared/ui';
 
 export default function LoginScreen() {
   const login = useLogin();
+  const initCrypto = useInitCrypto();
   const [attempts, setAttempts] = useState(0);
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
 
@@ -41,6 +43,13 @@ export default function LoginScreen() {
 
   const onSubmit = handleSubmit((values) => {
     if (lockedUntil && Date.now() < lockedUntil) return;
+
+    // Ensure crypto is initialized before submitting
+    if (!initCrypto.data && !initCrypto.isPending) {
+      initCrypto.mutate();
+      return;
+    }
+
     login.mutate(values, {
       onError: () => {
         const next = attempts + 1;
@@ -49,9 +58,13 @@ export default function LoginScreen() {
           setLockedUntil(Date.now() + AUTH.lockoutWindowMs);
         }
       },
-      onSuccess: () => {
+      onSuccess: (data) => {
         setAttempts(0);
         setLockedUntil(null);
+        // Navigate to 2FA verification screen
+        router.push(
+          `/verify-2fa?challengeToken=${data.challengeToken}&email=${encodeURIComponent(values.email)}`,
+        );
       },
     });
   });
@@ -67,13 +80,15 @@ export default function LoginScreen() {
       : undefined;
 
   const isLocked = Boolean(lockedUntil && Date.now() < lockedUntil);
+  const isLoading = login.isPending || initCrypto.isPending;
 
   return (
     <LinearGradient
-      colors={['#E8E8EE', '#FFFFFF', '#F5F5F8']}
-      locations={[0, 0.55, 1]}
+      colors={['rgba(76, 175, 80, 0.1)', '#FFFFFF', 'rgba(76, 175, 80, 0.05)']}
+      locations={[0, 0.5, 1]}
       style={{ flex: 1 }}
     >
+      <TopLoadingBar isLoading={isLoading} />
       <Screen
         scroll
         className="bg-transparent"
@@ -82,7 +97,7 @@ export default function LoginScreen() {
       >
         <View className="mb-8 items-center">
           <View
-            className="mb-4 h-24 w-24 items-center justify-center rounded-full bg-white"
+            className="mb-4 h-20 w-20 items-center justify-center rounded-full bg-primary"
             style={{
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 8 },
@@ -91,13 +106,12 @@ export default function LoginScreen() {
               elevation: 6,
             }}
           >
-            <Image
-              source={require('@/assets/img/logo-kaff-gui.png')}
-              style={{ width: 80, height: 80 }}
-              resizeMode="contain"
-            />
+            <Bird color="#FFFFFF" size={48} />
           </View>
-          <Text style={{ fontFamily: FONT_FAMILY.bold }} className="mb-1 text-3xl text-primary">
+          <Text
+            style={{ fontFamily: FONT_FAMILY.bold }}
+            className="mb-1 text-3xl font-bold text-primary"
+          >
             Kàff GUI
           </Text>
           <Text style={{ fontFamily: FONT_FAMILY.regular }} className="text-muted-foreground">
@@ -105,19 +119,10 @@ export default function LoginScreen() {
           </Text>
         </View>
 
-        <View
-          className="rounded-2xl border border-border bg-white p-6"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.08,
-            shadowRadius: 18,
-            elevation: 4,
-          }}
-        >
+        <View className="rounded-3xl bg-white p-6">
           <Text
             style={{ fontFamily: FONT_FAMILY.semibold }}
-            className="mb-6 text-xl text-foreground"
+            className="mb-6 text-center text-xl text-foreground"
           >
             Connexion
           </Text>
@@ -178,7 +183,7 @@ export default function LoginScreen() {
               </Text>
             ) : null}
 
-            <Button onPress={onSubmit} loading={login.isPending} disabled={isLocked}>
+            <Button onPress={onSubmit} loading={isLoading} disabled={isLocked || isLoading}>
               Se connecter
             </Button>
           </View>

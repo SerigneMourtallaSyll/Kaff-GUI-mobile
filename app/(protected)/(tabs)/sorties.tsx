@@ -7,50 +7,19 @@
  *   - PERTE  → chart-4 (warm gold)
  *
  * Quick-type filters at the top, then a chronological list of exit cards.
- * Behind the mock data, the API will surface paginated `sorties` ordered
- * by date desc; the chips will translate into a `?type=` query param.
  */
-import { Pressable, Text, View } from 'react-native';
+import { useState } from 'react';
+
+import { ActivityIndicator, Pressable, RefreshControl, Text, View } from 'react-native';
+
+import { router } from 'expo-router';
 
 import { AlertTriangle, DollarSign, Plus, XCircle } from 'lucide-react-native';
 
 import { FONT_FAMILY } from '@/core/theme';
 import { useLogout } from '@/features/auth';
+import { useSorties, type Sortie, type SortieType } from '@/features/sorties';
 import { AppHeader, Screen } from '@/shared/ui';
-
-type SortieType = 'VENTE' | 'DECES' | 'PERTE';
-
-interface SortieRow {
-  id: number;
-  type: SortieType;
-  pigeon: { bague: string; nom: string };
-  date: string;
-  details: string;
-}
-
-const mockSorties: SortieRow[] = [
-  {
-    id: 1,
-    type: 'VENTE',
-    pigeon: { bague: 'B2024-045', nom: 'Champion Elite' },
-    date: '10 Mai 2026',
-    details: '50,000 FCFA - M. Diop',
-  },
-  {
-    id: 2,
-    type: 'DECES',
-    pigeon: { bague: 'B2024-033', nom: 'Veteran' },
-    date: '05 Mai 2026',
-    details: 'Cause: Vieillesse',
-  },
-  {
-    id: 3,
-    type: 'VENTE',
-    pigeon: { bague: 'B2024-028', nom: 'Swift' },
-    date: '28 Avr 2026',
-    details: '35,000 FCFA - Mme Fall',
-  },
-];
 
 interface TypeStyle {
   label: string;
@@ -82,74 +51,159 @@ const TYPE_STYLES: Record<SortieType, TypeStyle> = {
 
 export default function SortiesScreen() {
   const logout = useLogout();
+  const [selectedType, setSelectedType] = useState<SortieType | undefined>();
+
+  // Real API call
+  const { data, isLoading, error, refetch, isRefetching } = useSorties({
+    typeSortie: selectedType,
+  });
+
+  const handleRefresh = () => {
+    refetch();
+  };
 
   return (
-    <Screen scroll className="bg-background" contentClassName="pb-6" edges={['bottom']}>
+    <View className="flex-1 bg-background">
       <AppHeader title="Gestion des Sorties" onLogout={() => logout.mutate()} />
+      <Screen
+        scroll
+        className="bg-background"
+        contentClassName="pb-6"
+        edges={['bottom']}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetching}
+            onRefresh={handleRefresh}
+            colors={['#4CAF50']}
+            tintColor="#4CAF50"
+          />
+        }
+      >
+        <View className="px-4 pb-24 pt-6">
+          {/* Primary CTA */}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Enregistrer une sortie"
+            onPress={() => router.push('/(protected)/(tabs)/pigeons')}
+            className="mb-4 h-12 flex-row items-center justify-center gap-2 rounded-lg bg-primary active:opacity-80"
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              elevation: 3,
+            }}
+          >
+            <Plus color="#FFFFFF" size={20} />
+            <Text style={{ fontFamily: FONT_FAMILY.medium }} className="text-base text-white">
+              Enregistrer une sortie
+            </Text>
+          </Pressable>
 
-      <View className="px-4 pt-6">
-        {/* Primary CTA */}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Enregistrer une sortie"
-          className="mb-4 h-12 flex-row items-center justify-center gap-2 rounded-lg bg-primary active:opacity-80"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 3,
-          }}
-        >
-          <Plus color="#FFFFFF" size={20} />
-          <Text style={{ fontFamily: FONT_FAMILY.medium }} className="text-base text-white">
-            Enregistrer une sortie
-          </Text>
-        </Pressable>
+          {/* Type quick filters */}
+          <View className="-mx-1 mb-6 flex-row">
+            {(['VENTE', 'DECES', 'PERTE'] as SortieType[]).map((type) => {
+              const s = TYPE_STYLES[type];
+              const isSelected = selectedType === type;
+              return (
+                <View key={type} className="flex-1 px-1">
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`Filtrer ${s.label}`}
+                    onPress={() => setSelectedType(isSelected ? undefined : type)}
+                    className="h-12 items-center justify-center rounded-lg active:opacity-70"
+                    style={{
+                      backgroundColor: isSelected ? s.fg : s.bg,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: isSelected ? '#FFFFFF' : s.fg,
+                        fontFamily: FONT_FAMILY.medium,
+                      }}
+                      className="text-sm"
+                    >
+                      {s.label}
+                    </Text>
+                  </Pressable>
+                </View>
+              );
+            })}
+          </View>
 
-        {/* Type quick filters */}
-        <View className="-mx-1 mb-6 flex-row">
-          {(['VENTE', 'DECES', 'PERTE'] as SortieType[]).map((type) => {
-            const s = TYPE_STYLES[type];
-            return (
-              <View key={type} className="flex-1 px-1">
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={`Filtrer ${s.label}`}
-                  className="h-12 items-center justify-center rounded-lg active:opacity-70"
-                  style={{ backgroundColor: s.bg }}
+          {/* Loading state */}
+          {isLoading ? (
+            <View className="items-center py-12">
+              <ActivityIndicator size="large" color="#4CAF50" />
+              <Text
+                style={{ fontFamily: FONT_FAMILY.regular }}
+                className="mt-4 text-sm text-muted-foreground"
+              >
+                Chargement des sorties...
+              </Text>
+            </View>
+          ) : null}
+
+          {/* Error state */}
+          {error ? (
+            <View className="items-center py-12">
+              <Text style={{ fontFamily: FONT_FAMILY.medium }} className="text-base text-danger">
+                Erreur de chargement
+              </Text>
+              <Text
+                style={{ fontFamily: FONT_FAMILY.regular }}
+                className="mt-2 text-sm text-muted-foreground"
+              >
+                Impossible de charger les sorties
+              </Text>
+            </View>
+          ) : null}
+
+          {/* List */}
+          {!isLoading && !error && data ? (
+            <View className="gap-3">
+              {data.results.map((sortie) => (
+                <SortieCard key={sortie.id} sortie={sortie} />
+              ))}
+              {data.results.length === 0 ? (
+                <Text
+                  style={{ fontFamily: FONT_FAMILY.regular }}
+                  className="py-8 text-center text-sm text-muted-foreground"
                 >
-                  <Text style={{ color: s.fg, fontFamily: FONT_FAMILY.medium }} className="text-sm">
-                    {s.label}
-                  </Text>
-                </Pressable>
-              </View>
-            );
-          })}
+                  Aucune sortie enregistrée.
+                </Text>
+              ) : null}
+            </View>
+          ) : null}
         </View>
-
-        {/* List */}
-        <View className="gap-3">
-          {mockSorties.map((sortie) => (
-            <SortieCard key={sortie.id} sortie={sortie} />
-          ))}
-        </View>
-      </View>
-    </Screen>
+      </Screen>
+    </View>
   );
 }
 
-function SortieCard({ sortie }: { sortie: SortieRow }) {
-  const style = TYPE_STYLES[sortie.type];
+function SortieCard({ sortie }: { sortie: Sortie }) {
+  const style = TYPE_STYLES[sortie.typeSortie];
+
+  // Format details based on type
+  let details = '';
+  if (sortie.typeSortie === 'VENTE' && sortie.prix) {
+    details = `${sortie.prix.toLocaleString('fr-FR')} FCFA`;
+    if (sortie.acheteur) details += ` - ${sortie.acheteur}`;
+  } else if (sortie.typeSortie === 'DECES' && sortie.cause) {
+    details = `Cause: ${sortie.cause}`;
+  } else if (sortie.typeSortie === 'PERTE' && sortie.circonstance) {
+    details = sortie.circonstance;
+  }
+
   return (
     <View
-      className="rounded-xl border border-border bg-card p-4"
+      className="rounded-2xl bg-card p-4"
       style={{
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.04,
-        shadowRadius: 2,
-        elevation: 1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        elevation: 2,
       }}
     >
       <View className="flex-row items-start gap-3">
@@ -166,13 +220,7 @@ function SortieCard({ sortie }: { sortie: SortieRow }) {
                 style={{ fontFamily: FONT_FAMILY.semibold }}
                 className="text-base text-foreground"
               >
-                {sortie.pigeon.nom}
-              </Text>
-              <Text
-                style={{ fontFamily: FONT_FAMILY.regular }}
-                className="text-sm text-muted-foreground"
-              >
-                {sortie.pigeon.bague}
+                Pigeon {sortie.pigeonId.slice(0, 8)}
               </Text>
             </View>
             <View className="rounded px-2 py-1" style={{ backgroundColor: style.bg }}>
@@ -180,21 +228,23 @@ function SortieCard({ sortie }: { sortie: SortieRow }) {
                 style={{ color: style.fg, fontFamily: FONT_FAMILY.medium }}
                 className="text-[10px]"
               >
-                {sortie.type}
+                {sortie.typeSortie}
               </Text>
             </View>
           </View>
-          <Text
-            style={{ fontFamily: FONT_FAMILY.regular }}
-            className="mb-2 text-sm text-muted-foreground"
-          >
-            {sortie.details}
-          </Text>
+          {details ? (
+            <Text
+              style={{ fontFamily: FONT_FAMILY.regular }}
+              className="mb-2 text-sm text-muted-foreground"
+            >
+              {details}
+            </Text>
+          ) : null}
           <Text
             style={{ fontFamily: FONT_FAMILY.regular }}
             className="text-xs text-muted-foreground"
           >
-            {sortie.date}
+            {new Date(sortie.dateSortie).toLocaleDateString('fr-FR')}
           </Text>
         </View>
       </View>

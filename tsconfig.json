@@ -18,7 +18,8 @@
       "@/storage/*": ["./src/storage/*"],
       "@/features/*": ["./src/features/*"],
       "@/shared/*": ["./src/shared/*"],
-      "@/navigation/*": ["./src/navigation/*"]
+      "@/navigation/*": ["./src/navigation/*"],
+      "@/services/*": ["./src/services/*"]
     },
     "types": ["jest", "@types/jest", "node"]
   },

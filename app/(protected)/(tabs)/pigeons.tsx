@@ -4,165 +4,168 @@
  * Layout:
  *   - Search input (filters by name or bague) + filter trigger.
  *   - Primary CTA "Ajouter un pigeon".
- *   - List of cards (sex-tinted avatar, status badge, race, cage).
- *
- * Data is mocked. When the API ships, swap `mockPigeons` for a paginated
- * query (`useInfinitePigeons`) and use `FlatList` for windowing.
+ *   - List of cards (sex-tinted avatar, status badge, race, age).
  */
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, RefreshControl, Text, TextInput, View } from 'react-native';
+
+import { router } from 'expo-router';
 
 import { Bird, Filter, Plus, Search } from 'lucide-react-native';
 
 import { FONT_FAMILY } from '@/core/theme';
 import { useLogout } from '@/features/auth';
+import { usePigeons, type PigeonListItem } from '@/features/pigeons';
 import { AppHeader, Screen } from '@/shared/ui';
-
-type Sexe = 'MALE' | 'FEMALE';
-
-interface PigeonRow {
-  bague: string;
-  nom: string;
-  sexe: Sexe;
-  race: string;
-  statut: 'ACTIF' | 'INACTIF';
-  cage: string;
-}
-
-const mockPigeons: PigeonRow[] = [
-  {
-    bague: 'B2024-001',
-    nom: 'Sultan',
-    sexe: 'MALE',
-    race: 'Voyageur',
-    statut: 'ACTIF',
-    cage: 'A1',
-  },
-  {
-    bague: 'B2024-012',
-    nom: 'Princesse',
-    sexe: 'FEMALE',
-    race: 'Mondain',
-    statut: 'ACTIF',
-    cage: 'A4',
-  },
-  {
-    bague: 'B2024-033',
-    nom: 'Champion',
-    sexe: 'MALE',
-    race: 'Voyageur',
-    statut: 'ACTIF',
-    cage: 'B3',
-  },
-  { bague: 'B2024-045', nom: 'Reine', sexe: 'FEMALE', race: 'Texan', statut: 'ACTIF', cage: 'C2' },
-  {
-    bague: 'B2024-060',
-    nom: 'Warrior',
-    sexe: 'MALE',
-    race: 'Voyageur',
-    statut: 'ACTIF',
-    cage: 'D1',
-  },
-  {
-    bague: 'B2024-070',
-    nom: 'Beauty',
-    sexe: 'FEMALE',
-    race: 'Mondain',
-    statut: 'ACTIF',
-    cage: 'D3',
-  },
-];
 
 export default function PigeonsScreen() {
   const logout = useLogout();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filtered = useMemo(() => {
-    const term = searchTerm.trim().toLowerCase();
-    if (!term) return mockPigeons;
-    return mockPigeons.filter(
-      (p) => p.nom.toLowerCase().includes(term) || p.bague.toLowerCase().includes(term),
-    );
-  }, [searchTerm]);
+  // Real API call with React Query
+  const { data, isLoading, error, refetch, isRefetching } = usePigeons({
+    search: searchTerm,
+    statut: 'ACTIF',
+  });
+
+  const handleRefresh = () => {
+    refetch();
+  };
 
   return (
-    <Screen scroll className="bg-background" contentClassName="pb-6" edges={['bottom']}>
+    <View className="flex-1 bg-background">
       <AppHeader title="Gestion des Pigeons" onLogout={() => logout.mutate()} />
-
-      <View className="px-4 pt-6">
-        {/* Search + filter */}
-        <View className="mb-4 flex-row gap-2">
-          <View className="flex-1 flex-row items-center rounded-lg border border-border bg-input px-3">
-            <Search color="#717182" size={20} />
-            <TextInput
-              value={searchTerm}
-              onChangeText={setSearchTerm}
-              placeholder="Rechercher..."
-              placeholderTextColor="#9C9CB1"
-              style={{ fontFamily: FONT_FAMILY.regular }}
-              className="ml-2 h-12 flex-1 text-base text-foreground"
-              accessibilityLabel="Rechercher un pigeon"
-            />
+      <Screen
+        scroll
+        className="bg-background"
+        contentClassName="pb-6"
+        edges={['bottom']}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetching}
+            onRefresh={handleRefresh}
+            colors={['#4CAF50']}
+            tintColor="#4CAF50"
+          />
+        }
+      >
+        <View className="px-4 pb-24 pt-6">
+          {/* Search + filter */}
+          <View className="mb-4 flex-row gap-2">
+            <View className="flex-1 flex-row items-center rounded-lg border border-border bg-input px-3">
+              <Search color="#717182" size={20} />
+              <TextInput
+                value={searchTerm}
+                onChangeText={setSearchTerm}
+                placeholder="Rechercher par bague ou race..."
+                placeholderTextColor="#9C9CB1"
+                style={{ fontFamily: FONT_FAMILY.regular }}
+                className="ml-2 h-12 flex-1 text-base text-foreground"
+                accessibilityLabel="Rechercher un pigeon"
+              />
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Filtrer"
+              className="h-12 w-12 items-center justify-center rounded-xl bg-card active:bg-muted"
+              style={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.06,
+                shadowRadius: 8,
+                elevation: 2,
+              }}
+            >
+              <Filter color="#030213" size={20} />
+            </Pressable>
           </View>
+
+          {/* CTA */}
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Filtrer"
-            className="h-12 w-12 items-center justify-center rounded-lg border border-border bg-card active:bg-muted"
+            accessibilityLabel="Ajouter un pigeon"
+            onPress={() => router.push('/(protected)/pigeons/add')}
+            className="mb-4 h-12 flex-row items-center justify-center gap-2 rounded-lg bg-primary active:opacity-80"
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              elevation: 3,
+            }}
           >
-            <Filter color="#030213" size={20} />
-          </Pressable>
-        </View>
-
-        {/* CTA */}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Ajouter un pigeon"
-          className="mb-4 h-12 flex-row items-center justify-center gap-2 rounded-lg bg-primary active:opacity-80"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 3,
-          }}
-        >
-          <Plus color="#FFFFFF" size={20} />
-          <Text style={{ fontFamily: FONT_FAMILY.medium }} className="text-base text-white">
-            Ajouter un pigeon
-          </Text>
-        </Pressable>
-
-        {/* List */}
-        <View className="gap-3">
-          {filtered.map((p) => (
-            <PigeonCard key={p.bague} pigeon={p} />
-          ))}
-          {filtered.length === 0 ? (
-            <Text
-              style={{ fontFamily: FONT_FAMILY.regular }}
-              className="py-8 text-center text-sm text-muted-foreground"
-            >
-              Aucun pigeon ne correspond à votre recherche.
+            <Plus color="#FFFFFF" size={20} />
+            <Text style={{ fontFamily: FONT_FAMILY.medium }} className="text-base text-white">
+              Ajouter un pigeon
             </Text>
+          </Pressable>
+
+          {/* Loading state */}
+          {isLoading ? (
+            <View className="items-center py-12">
+              <ActivityIndicator size="large" color="#4CAF50" />
+              <Text
+                style={{ fontFamily: FONT_FAMILY.regular }}
+                className="mt-4 text-sm text-muted-foreground"
+              >
+                Chargement des pigeons...
+              </Text>
+            </View>
+          ) : null}
+
+          {/* Error state */}
+          {error ? (
+            <View className="items-center py-12">
+              <Text style={{ fontFamily: FONT_FAMILY.medium }} className="text-base text-danger">
+                Erreur de chargement
+              </Text>
+              <Text
+                style={{ fontFamily: FONT_FAMILY.regular }}
+                className="mt-2 text-sm text-muted-foreground"
+              >
+                Impossible de charger les pigeons
+              </Text>
+            </View>
+          ) : null}
+
+          {/* List */}
+          {!isLoading && !error && data ? (
+            <View className="gap-3">
+              {data.results.map((pigeon) => (
+                <PigeonCard key={pigeon.id} pigeon={pigeon} />
+              ))}
+              {data.results.length === 0 ? (
+                <Text
+                  style={{ fontFamily: FONT_FAMILY.regular }}
+                  className="py-8 text-center text-sm text-muted-foreground"
+                >
+                  Aucun pigeon ne correspond à votre recherche.
+                </Text>
+              ) : null}
+            </View>
           ) : null}
         </View>
-      </View>
-    </Screen>
+      </Screen>
+    </View>
   );
 }
 
-function PigeonCard({ pigeon }: { pigeon: PigeonRow }) {
+function PigeonCard({ pigeon }: { pigeon: PigeonListItem }) {
   const isMale = pigeon.sexe === 'MALE';
+  const ageAnnees = Math.floor(pigeon.ageJours / 365);
+  const ageMois = Math.floor((pigeon.ageJours % 365) / 30);
+
   return (
-    <View
-      className="rounded-xl border border-border bg-card p-4"
+    <Pressable
+      onPress={() => router.push(`/(protected)/pigeons/${pigeon.id}`)}
+      className="rounded-2xl bg-card p-4 active:opacity-80"
       style={{
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.04,
-        shadowRadius: 2,
-        elevation: 1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        elevation: 2,
       }}
     >
       <View className="flex-row items-start gap-3">
@@ -176,9 +179,9 @@ function PigeonCard({ pigeon }: { pigeon: PigeonRow }) {
           <View className="mb-1 flex-row items-start justify-between">
             <Text
               style={{ fontFamily: FONT_FAMILY.semibold }}
-              className="text-base text-foreground"
+              className="flex-1 text-base text-foreground"
             >
-              {pigeon.nom}
+              {pigeon.bague}
             </Text>
             <View className="rounded bg-primary/10 px-2 py-1">
               <Text style={{ fontFamily: FONT_FAMILY.medium }} className="text-[10px] text-primary">
@@ -186,12 +189,6 @@ function PigeonCard({ pigeon }: { pigeon: PigeonRow }) {
               </Text>
             </View>
           </View>
-          <Text
-            style={{ fontFamily: FONT_FAMILY.regular }}
-            className="mb-2 text-sm text-muted-foreground"
-          >
-            {pigeon.bague}
-          </Text>
           <View className="flex-row flex-wrap gap-x-4 gap-y-1">
             <Text
               style={{ fontFamily: FONT_FAMILY.regular }}
@@ -205,15 +202,18 @@ function PigeonCard({ pigeon }: { pigeon: PigeonRow }) {
             >
               Race: {pigeon.race}
             </Text>
-            <Text
-              style={{ fontFamily: FONT_FAMILY.regular }}
-              className="text-xs text-muted-foreground"
-            >
-              Cage: {pigeon.cage}
-            </Text>
+            {ageAnnees > 0 || ageMois > 0 ? (
+              <Text
+                style={{ fontFamily: FONT_FAMILY.regular }}
+                className="text-xs text-muted-foreground"
+              >
+                Âge: {ageAnnees > 0 ? `${ageAnnees}a ` : ''}
+                {ageMois > 0 ? `${ageMois}m` : ''}
+              </Text>
+            ) : null}
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
